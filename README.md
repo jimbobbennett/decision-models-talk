@@ -49,6 +49,7 @@ Each server reads its settings from environment variables. It also loads them fr
 | `TYPESAFE_API_KEY` | Yes | — | Your TypeSafe API key |
 | `JEV_MODEL` | No | `jev-latest` | The Jev model to call |
 | `PORT` | No | `3000` (demo 01), `3001` (demo 02), `3002` (demo 03) | The port the server listens on |
+| `HOST` | No | `127.0.0.1` | The address the server listens on. The default is your machine only. Set it to `0.0.0.0` only if you want other devices to reach the demo, which also lets them spend your API key. |
 
 `.env` files are git-ignored. Only `.env.example` is checked in.
 

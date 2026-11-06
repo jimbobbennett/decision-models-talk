@@ -20,6 +20,8 @@ for (const envPath of [path.join(dir, ".env"), path.join(dir, "..", ".env")]) {
 }
 
 const PORT = Number(process.env.PORT || 3001);
+// Listen on this machine only by default, so nobody else on the network can use your key.
+const HOST = process.env.HOST || "127.0.0.1";
 const API_KEY = process.env.TYPESAFE_API_KEY;
 const MODEL = process.env.JEV_MODEL || "jev-latest";
 const API_URL = "https://api.typesafe.ai/v1/systemone";
@@ -67,10 +69,21 @@ function buildRequest(board, mark) {
   };
 }
 
+const MAX_BODY_BYTES = 1_000_000;
+
 async function readBody(req) {
   const chunks = [];
-  for await (const c of req) chunks.push(c);
-  return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+  let size = 0;
+  for await (const c of req) {
+    size += c.length;
+    if (size > MAX_BODY_BYTES) throw Object.assign(new Error("Request body too large"), { status: 413 });
+    chunks.push(c);
+  }
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+  } catch {
+    throw Object.assign(new Error("Request body is not valid JSON"), { status: 400 });
+  }
 }
 
 function send(res, status, body, type = "application/json") {
@@ -115,8 +128,8 @@ const server = http.createServer(async (req, res) => {
     }
     send(res, 404, { detail: "Not found" });
   } catch (err) {
-    send(res, 500, { detail: String(err?.message || err) });
+    send(res, err?.status || 500, { detail: String(err?.message || err) });
   }
 });
 
-server.listen(PORT, () => console.log(`Tic-Tak-Jev → http://localhost:${PORT}  (model: ${MODEL})`));
+server.listen(PORT, HOST, () => console.log(`Tic-Tak-Jev → http://localhost:${PORT}  (model: ${MODEL})`));

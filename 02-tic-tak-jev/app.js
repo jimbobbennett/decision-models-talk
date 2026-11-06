@@ -106,13 +106,13 @@ async function jevMove() {
     const rows = Object.entries(a.probabilities || {}).sort((x, y) => y[1] - x[1]);
     const el = addEntry(`
       <div class="entry-head">
-        <span class="entry-title">Move ${moveNo} · Jev plays ${game.jev} on <span class="mono">${a.choice}</span></span>
+        <span class="entry-title">Move ${moveNo} · Jev plays ${game.jev} on <span class="mono">${esc(a.choice)}</span></span>
         <span class="entry-meta"><b>${pct(a.probabilities?.[a.choice] ?? a.confidence)}</b> · <b>${data.latencyMs} ms</b></span>
       </div>
       <div class="bars">
         ${rows.map(([sq, p]) => `
           <div class="bar ${sq === a.choice ? "top" : ""}">
-            <span class="name">${sq}</span>
+            <span class="name">${esc(sq)}</span>
             <div class="track"><div class="fill" data-w="${(p * 100).toFixed(1)}"></div></div>
             <span class="pct">${pct(p)}</span>
           </div>`).join("")}
