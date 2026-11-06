@@ -21,7 +21,7 @@ The answer is always one of the options you offered, so there's no free text to 
 
 ## Quick start
 
-You need [Node.js](https://nodejs.org) 18 or later and a TypeSafe API key. There are no npm packages to install.
+You need [Node.js](https://nodejs.org) 18 or later and a TypeSafe API key. Create the key in the [TypeSafe console](https://console.typesafe.ai/keys); the [TypeSafe quickstart](https://docs.typesafe.ai/introduction/quickstart) walks through it. There are no npm packages to install.
 
 ```bash
 git clone https://github.com/jimbobbennett/decision-models-talk.git
@@ -112,6 +112,11 @@ This ticket is genuinely ambiguous, so Jev splits its probability between the tw
 .env.example          Template for your API key
 01-jev-basics/        Demo 01: noul, choice and score questions
 02-tic-tak-jev/       Demo 02: tic-tac-toe against Jev
+LICENSE               MIT license
 ```
 
 Each demo folder has its own README explaining how its code works.
+
+## License
+
+[MIT](LICENSE)
