@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev Decisions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #fafafa;
+    --text: #111827;
+    --muted: #6b7280;
+    --faint: #9ca3af;
+    --border: #e5e7eb;
+    --track: #f3f4f6;
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+    --bar-other: #cbd5e1;
+    --yes: #16a34a;
+    --no: #dc2626;
+    --radius: 10px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body { font: 15px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 24px 64px; }
+
+  header { margin-bottom: 40px; }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+
+  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 48px; align-items: start; }
+
+  main { min-width: 0; }
+
+  /* Prompt list */
+  nav .group { margin-bottom: 24px; }
+  nav h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 8px 12px; }
+  nav button {
+    display: block; width: 100%; text-align: left; border: 0; background: none; font: inherit; color: var(--text);
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+  }
+  nav button:hover { background: var(--surface); }
+  nav button[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+  /* Question */
+  .meta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .badge {
+    font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; padding: 5px 8px; border-radius: 6px;
+    background: var(--track); color: var(--muted);
+  }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  input, textarea {
+    width: 100%; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; outline: none;
+  }
+  input { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  textarea { resize: vertical; min-height: 96px; }
+  input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .field { margin-bottom: 18px; }
+  .options { display: flex; flex-wrap: wrap; gap: 6px; }
+  .options span { font-size: 13px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); }
+
+  .actions { display: flex; align-items: center; gap: 14px; margin: 6px 0 36px; }
+  .run {
+    font: 600 14px/1 Inter, system-ui, sans-serif; color: #fff; background: var(--text);
+    border: 0; border-radius: 8px; padding: 12px 20px; cursor: pointer;
+  }
+  .run:hover { background: #000; }
+  .run:disabled { opacity: 0.5; cursor: default; }
+  .hint { font-size: 13px; color: var(--faint); }
+
+  /* Result */
+  .result { border-top: 1px solid var(--border); padding-top: 28px; min-height: 220px; }
+  .result.empty { color: var(--faint); }
+  .answer { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+
+  .bars { display: grid; gap: 14px; }
+  .bar { display: grid; grid-template-columns: 230px 1fr 56px; align-items: center; gap: 14px; }
+  .bar .name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .track { height: 12px; background: var(--track); border-radius: 999px; overflow: hidden; }
+  .bar .fill { height: 100%; width: 0; background: var(--bar-other); border-radius: 999px; transition: width 600ms cubic-bezier(.2,.8,.2,1); }
+  .bar.top .fill { background: var(--accent); }
+  .bar.top .name { font-weight: 600; }
+  .bar .pct { font: 500 14px/1 "JetBrains Mono", ui-monospace, monospace; text-align: right; font-variant-numeric: tabular-nums; }
+  .bar.yes .fill { background: var(--yes); }
+  .bar.no .fill { background: var(--no); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 32px; font-size: 13px; color: var(--muted); }
+  .stats b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  details { margin-top: 24px; }
+  details + details { margin-top: 12px; }
+  summary { font-size: 13px; color: var(--muted); cursor: pointer; }
+  pre {
+    font: 13px/1.6 "JetBrains Mono", ui-monospace, monospace; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; overflow-x: auto; margin: 10px 0 0;
+  }
+  .error { color: var(--no); }
+
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 820px) {
+    .wrap { padding: 32px 16px 48px; }
+    .layout { grid-template-columns: 1fr; gap: 24px; }
+    nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+    nav .group { margin-bottom: 8px; }
+    .bar { grid-template-columns: 110px 1fr 48px; gap: 10px; }
+    .answer { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Jev decisions</h1>
+  </header>
+
+  <div class="layout">
+    <nav id="nav"></nav>
+
+    <main>
+      <div class="meta"><span class="badge" id="type"></span></div>
+      <div class="field">
+        <label for="instructions">Question</label>
+        <input id="instructions" autocomplete="off">
+      </div>
+      <div class="field" id="optionsField">
+        <label id="optionsLabel">Categories</label>
+        <div class="options" id="options"></div>
+      </div>
+      <div class="field">
+        <label for="state">Text</label>
+        <textarea id="state" rows="4"></textarea>
+      </div>
+      <div class="actions">
+        <button class="run" id="run">Decide</button>
+        <span class="hint">⌘ / Ctrl + Enter</span>
+      </div>
+
+      <section class="result empty" id="result">Run a decision to see the result.</section>
+    </main>
+  </div>
+</div>
+
+<script src="/prompts.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const TYPE_LABEL = { noul: "noul", choice: "choice · category", score: "score" };
+  const pct = (p) => `${Math.round(p * 100)}%`;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const human = (k) => k.replace(/_/g, " ");
+  let current = null;
+
+  // Build the prompt list grouped by decision type.
+  const groups = {};
+  for (const p of PROMPTS) (groups[p.group] ||= []).push(p);
+  $("nav").innerHTML = Object.entries(groups).map(([g, items]) => `
+    <div class="group"><h2>${esc(g)}</h2>
+      ${items.map((p) => `<button data-id="${p.id}">${esc(p.label)}</button>`).join("")}
+    </div>`).join("");
+  $("nav").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-id]");
+    if (b) select(b.dataset.id);
+  });
+
+  function select(id) {
+    current = PROMPTS.find((p) => p.id === id);
+    history.replaceState(null, "", location.pathname + location.search + "#" + id);
+    document.querySelectorAll("nav button").forEach((b) => b.setAttribute("aria-current", b.dataset.id === id));
+    $("type").textContent = TYPE_LABEL[current.type];
+    $("instructions").value = current.instructions;
+    $("state").value = current.state;
+    const opts = current.type === "choice" ? Object.keys(current.criteria).map(human)
+               : current.type === "score" ? current.criteria.map((c, i) => `${i} · ${c}`)
+               : ["yes", "no"];
+    $("optionsLabel").textContent = current.type === "score" ? "Levels" : current.type === "choice" ? "Categories" : "Answer";
+    $("options").innerHTML = opts.map((o) => `<span>${esc(o)}</span>`).join("");
+    $("result").className = "result empty";
+    $("result").textContent = "Run a decision to see the result.";
+  }
+
+  async function run() {
+    if (!current) return;
+    const question = { type: current.type, instructions: $("instructions").value.trim() };
+    if (current.criteria) question.criteria = current.criteria;
+    $("run").disabled = true;
+    $("result").className = "result";
+    $("result").innerHTML = `<div class="spinner"></div>`;
+    try {
+      const res = await fetch("/api/decide", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: $("state").value, questions: { q: question } }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || data));
+      render(data);
+    } catch (err) {
+      $("result").innerHTML = `<p class="error">${esc(err.message)}</p>`;
+    } finally {
+      $("run").disabled = false;
+    }
+  }
+
+  function render(data) {
+    const a = data.answers.q;
+    let answer, sub, rows;
+
+    if (a.type === "noul") {
+      const yes = a.noul >= 0.5;
+      answer = `${yes ? "Yes" : "No"} · ${pct(yes ? a.noul : 1 - a.noul)}`;
+      sub = `P(yes) = ${a.noul.toFixed(3)}`;
+      rows = [
+        { name: "yes", p: a.noul, cls: "yes" },
+        { name: "no", p: 1 - a.noul, cls: "no" },
+      ];
+    } else if (a.type === "choice") {
+      answer = human(a.choice);
+      sub = `${pct(a.probabilities[a.choice])} probability · confidence ${a.confidence.toFixed(2)}`;
+      rows = Object.entries(a.probabilities)
+        .sort((x, y) => y[1] - x[1])
+        .map(([k, p]) => ({ name: human(k), p, cls: k === a.choice ? "top" : "" }));
+    } else if (a.type === "score") {
+      const levels = Object.keys(a.legend).sort((x, y) => x - y);
+      const max = levels.length - 1;
+      const nearest = String(Math.round(a.score));
+      answer = `${a.score.toFixed(2)} / ${max}`;
+      sub = `Closest level: “${a.legend[nearest]}” · confidence ${a.confidence.toFixed(2)}`;
+      rows = levels.map((k) => ({ name: `${k} · ${a.legend[k]}`, p: a.probabilities[k] ?? 0, cls: k === nearest ? "top" : "" }));
+    }
+
+    const u = data.usage || {};
+    $("result").innerHTML = `
+      <p class="answer">${esc(answer)}</p>
+      <p class="sub">${esc(sub)}</p>
+      <div class="bars">
+        ${rows.map((r) => `
+          <div class="bar ${r.cls}">
+            <span class="name" title="${esc(r.name)}">${esc(r.name)}</span>
+            <div class="track"><div class="fill" data-w="${(r.p * 100).toFixed(1)}"></div></div>
+            <span class="pct">${pct(r.p)}</span>
+          </div>`).join("")}
+      </div>
+      <div class="stats">
+        <span>Latency <b>${data.latencyMs} ms</b></span>
+        <span>Input tokens <b>${u.input_tokens ?? "–"}</b></span>
+        <span>Model <b>${esc(data.model || "")}</b></span>
+      </div>
+      <details><summary>Raw request</summary><pre>${esc("POST https://api.typesafe.ai/v1/systemone\n\n" + JSON.stringify(data.request, null, 2))}</pre></details>
+      <details><summary>Raw response</summary><pre>${esc(JSON.stringify({ model: data.model, answers: data.answers, usage: data.usage }, null, 2))}</pre></details>`;
+    // Force a reflow so the width change animates from 0.
+    const fills = document.querySelectorAll(".fill");
+    void $("result").offsetWidth;
+    fills.forEach((f) => (f.style.width = f.dataset.w + "%"));
+  }
+
+  $("run").addEventListener("click", run);
+  document.addEventListener("keydown", (e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run(); });
+  // Deep links: #<prompt-id> selects a prompt, ?run runs it on load.
+  const fromHash = PROMPTS.find((p) => p.id === location.hash.slice(1));
+  select((fromHash || PROMPTS[0]).id);
+  if (new URLSearchParams(location.search).has("run")) run();
+</script>
+</body>
+</html>
