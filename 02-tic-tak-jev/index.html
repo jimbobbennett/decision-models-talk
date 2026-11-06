@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tic-Tak-Jev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #fafafa;
+    --text: #111827;
+    --muted: #6b7280;
+    --faint: #9ca3af;
+    --border: #e5e7eb;
+    --track: #f3f4f6;
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+    --bar-other: #cbd5e1;
+    --win: #16a34a;
+    --win-soft: #ecfdf3;
+    --no: #dc2626;
+    --radius: 10px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body { font: 15px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 24px 64px; }
+
+  header { margin-bottom: 40px; }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+
+  .layout { display: grid; grid-template-columns: 372px 1fr; gap: 56px; align-items: start; }
+  main, aside { min-width: 0; }
+
+  /* Game column */
+  .status { display: flex; align-items: center; gap: 10px; min-height: 40px; margin-bottom: 18px; }
+  #spinner:empty { display: none; }
+  .status .text { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); width: 372px; height: 372px; }
+  .cell {
+    position: relative; border: 0; background: var(--bg); font: inherit; cursor: pointer; padding: 0;
+    display: grid; place-items: center; transition: background 150ms;
+  }
+  /* Inner grid lines only */
+  .cell:nth-child(-n+6) { border-bottom: 2px solid var(--border); }
+  .cell:not(:nth-child(3n)) { border-right: 2px solid var(--border); }
+  .cell:hover:not(:disabled) { background: var(--surface); }
+  .cell:disabled { cursor: default; }
+  .cell .letter { font: 500 14px/1 "JetBrains Mono", ui-monospace, monospace; color: var(--faint); }
+  .cell .mark { font-size: 64px; font-weight: 600; line-height: 1; }
+  .cell .mark.X { color: var(--text); }
+  .cell .mark.O { color: var(--accent); }
+  .cell.last::after {
+    content: ""; position: absolute; inset: 14px; border-radius: 12px; border: 2px solid var(--accent-soft);
+  }
+  .cell.win { background: var(--win-soft); }
+  .cell.win .mark { color: var(--win); }
+
+  .controls { margin-top: 28px; display: grid; gap: 14px; }
+  .segmented { display: inline-flex; background: var(--track); border-radius: 8px; padding: 3px; width: 100%; }
+  .segmented button {
+    flex: 1; border: 0; background: none; font: 500 13px/1 Inter, system-ui, sans-serif; color: var(--muted);
+    padding: 10px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .segmented button[aria-pressed="true"] { background: var(--bg); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .run {
+    font: 600 14px/1 Inter, system-ui, sans-serif; color: #fff; background: var(--text);
+    border: 0; border-radius: 8px; padding: 12px 20px; cursor: pointer; justify-self: start;
+  }
+  .run:hover { background: #000; }
+  .score { display: flex; gap: 24px; font-size: 13px; color: var(--muted); }
+  .score b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Move log */
+  aside h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
+  .log { display: grid; }
+  .log .empty { color: var(--faint); }
+  .entry { border-top: 1px solid var(--border); padding: 20px 0; }
+  .entry:first-child { border-top: 0; padding-top: 0; }
+  .entry.human { padding: 12px 0; color: var(--muted); font-size: 14px; }
+  .entry-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  .entry-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .entry-meta { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .entry-meta b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  .bars { display: grid; gap: 10px; }
+  .bar { display: grid; grid-template-columns: 28px 1fr 48px; align-items: center; gap: 12px; }
+  .bar .name { font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; }
+  .bar .track { height: 10px; background: var(--track); border-radius: 999px; overflow: hidden; }
+  .bar .fill { height: 100%; width: 0; background: var(--bar-other); border-radius: 999px; transition: width 600ms cubic-bezier(.2,.8,.2,1); }
+  .bar.top .fill { background: var(--accent); }
+  .bar.top .name { color: var(--accent); }
+  .bar .pct { font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; text-align: right; font-variant-numeric: tabular-nums; }
+
+  details { margin-top: 18px; }
+  details + details { margin-top: 10px; }
+  summary { font-size: 13px; color: var(--muted); cursor: pointer; }
+  pre {
+    font: 12.5px/1.6 "JetBrains Mono", ui-monospace, monospace; background: var(--surface); white-space: pre-wrap; word-break: break-word;
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 10px 0 0;
+  }
+  .error { color: var(--no); }
+
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 860px) {
+    .wrap { padding: 32px 16px 48px; }
+    .layout { grid-template-columns: 1fr; gap: 40px; }
+    .board { width: 100%; max-width: 372px; height: auto; aspect-ratio: 1; }
+    .controls { max-width: 372px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Tic-Tak-Jev</h1>
+  </header>
+
+  <div class="layout">
+    <main>
+      <div class="status"><span id="spinner"></span><span class="text" id="status"></span></div>
+      <div class="board" id="board"></div>
+      <div class="controls">
+        <div class="segmented" role="group" aria-label="Who goes first">
+          <button data-first="human" aria-pressed="true">You go first</button>
+          <button data-first="jev" aria-pressed="false">Jev goes first</button>
+        </div>
+        <button class="run" id="newGame">New game</button>
+        <div class="score">
+          <span>You <b id="scoreHuman">0</b></span>
+          <span>Jev <b id="scoreJev">0</b></span>
+          <span>Draws <b id="scoreDraw">0</b></span>
+        </div>
+      </div>
+    </main>
+
+    <aside>
+      <h2>Moves</h2>
+      <div class="log" id="log"><p class="empty">Make a move to start. Each Jev move shows up here with its request and response.</p></div>
+    </aside>
+  </div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

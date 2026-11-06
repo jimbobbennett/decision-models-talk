@@ -8,9 +8,10 @@ import path from "node:path";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
-// Load a local .env if present (KEY=value lines).
-const envPath = path.join(dir, ".env");
-if (existsSync(envPath)) {
+// Load .env files if present (KEY=value lines). The demo folder's .env wins over the
+// repo root's .env, and real environment variables win over both.
+for (const envPath of [path.join(dir, ".env"), path.join(dir, "..", ".env")]) {
+  if (!existsSync(envPath)) continue;
   for (const line of readFileSync(envPath, "utf8").split("\n")) {
     const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
     if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
@@ -23,7 +24,7 @@ const MODEL = process.env.JEV_MODEL || "jev-latest";
 const API_URL = "https://api.typesafe.ai/v1/systemone";
 
 if (!API_KEY) {
-  console.error("TYPESAFE_API_KEY is not set (export it or add it to 01-jev-basics/.env)");
+  console.error("TYPESAFE_API_KEY is not set (copy .env.example to .env in the repo root and add your key)");
   process.exit(1);
 }
 
