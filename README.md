@@ -18,6 +18,7 @@ The answer is always one of the options you offered, so there's no free text to 
 | --- | --- |
 | [01 · Jev basics](01-jev-basics/) | Pick from preset prompts covering `noul`, `choice` (category) and `score` questions. Each answer is shown as text and a bar chart of the probabilities. |
 | [02 · Tic-Tak-Jev](02-tic-tak-jev/) | Play tic-tac-toe against Jev. Each Jev move is a `choice` over the empty squares, and the page shows the probabilities and the raw request and response for every move. |
+| [03 · Angry customer guardrail](03-angry-customer-guardrail/) | A support chat with a real-time Jev guardrail. Jev scores each message for anger and escalation signals, and routes the conversation to the bot, a flagged watch, or a human. |
 
 ## Quick start
 
@@ -32,11 +33,12 @@ cp .env.example .env        # then edit .env and set TYPESAFE_API_KEY
 Run a demo:
 
 ```bash
-node 01-jev-basics/server.mjs     # http://localhost:3000
-node 02-tic-tak-jev/server.mjs    # http://localhost:3001
+node 01-jev-basics/server.mjs                 # http://localhost:3000
+node 02-tic-tak-jev/server.mjs                # http://localhost:3001
+node 03-angry-customer-guardrail/server.mjs   # http://localhost:3002
 ```
 
-The demos use different ports, so you can run both at the same time.
+The demos use different ports, so you can run them all at the same time.
 
 ## Configuration
 
@@ -46,7 +48,7 @@ Each server reads its settings from environment variables. It also loads them fr
 | --- | --- | --- | --- |
 | `TYPESAFE_API_KEY` | Yes | — | Your TypeSafe API key |
 | `JEV_MODEL` | No | `jev-latest` | The Jev model to call |
-| `PORT` | No | `3000` (demo 01), `3001` (demo 02) | The port the server listens on |
+| `PORT` | No | `3000` (demo 01), `3001` (demo 02), `3002` (demo 03) | The port the server listens on |
 
 `.env` files are git-ignored. Only `.env.example` is checked in.
 
@@ -61,6 +63,7 @@ browser  ──►  local Node server  ──►  https://api.typesafe.ai/v1/sys
 
 - The page never sees your API key. It calls the local server, and the server adds the `Authorization: Bearer` header and forwards the request to Jev.
 - The server sends the exact request body back to the page along with Jev's response, so you can see both in the UI.
+- The pages are sized for presenting on a 1920×1080 screen or stream, and stack into a single column on narrow screens.
 - There is no build step and no framework. Each demo is plain HTML, CSS and JavaScript that you can read top to bottom.
 
 ## Calling Jev directly
@@ -109,10 +112,11 @@ This ticket is genuinely ambiguous, so Jev splits its probability between the tw
 ## Repository layout
 
 ```
-.env.example          Template for your API key
-01-jev-basics/        Demo 01: noul, choice and score questions
-02-tic-tak-jev/       Demo 02: tic-tac-toe against Jev
-LICENSE               MIT license
+.env.example                  Template for your API key
+01-jev-basics/                Demo 01: noul, choice and score questions
+02-tic-tak-jev/               Demo 02: tic-tac-toe against Jev
+03-angry-customer-guardrail/  Demo 03: real-time angry customer guardrail
+LICENSE                       MIT license
 ```
 
 Each demo folder has its own README explaining how its code works.

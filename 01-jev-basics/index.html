@@ -26,22 +26,23 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--text); }
-  body { font: 15px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 24px 64px; }
+  body { font: 20px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1760px; margin: 0 auto; padding: 32px 56px 48px; }
 
-  header { margin-bottom: 40px; }
-  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  header { margin-bottom: 24px; }
+  h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
 
-  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 48px; align-items: start; }
+  .layout { display: grid; grid-template-columns: 310px 1fr; gap: 56px; align-items: start; }
+  .workspace { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: start; }
 
   main { min-width: 0; }
 
   /* Prompt list */
-  nav .group { margin-bottom: 24px; }
-  nav h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 8px 12px; }
+  nav .group { margin-bottom: 20px; }
+  nav h2 { font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 8px 12px; }
   nav button {
     display: block; width: 100%; text-align: left; border: 0; background: none; font: inherit; color: var(--text);
-    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    padding: 7px 14px; border-radius: 8px; cursor: pointer;
   }
   nav button:hover { background: var(--surface); }
   nav button[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
@@ -49,65 +50,67 @@
   /* Question */
   .meta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .badge {
-    font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; padding: 5px 8px; border-radius: 6px;
+    font: 500 16px/1 "JetBrains Mono", ui-monospace, monospace; padding: 6px 10px; border-radius: 6px;
     background: var(--track); color: var(--muted);
   }
-  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  label { display: block; font-size: 16px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
   input, textarea {
     width: 100%; font: inherit; color: var(--text); background: var(--bg);
-    border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; outline: none;
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; outline: none;
   }
-  input { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
-  textarea { resize: vertical; min-height: 96px; }
+  input { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  textarea { resize: vertical; min-height: 150px; }
   input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .field { margin-bottom: 18px; }
-  .options { display: flex; flex-wrap: wrap; gap: 6px; }
-  .options span { font-size: 13px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); }
+  .field { margin-bottom: 22px; }
+  .options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .options span { font-size: 17px; padding: 5px 14px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); }
 
-  .actions { display: flex; align-items: center; gap: 14px; margin: 6px 0 36px; }
+  .actions { display: flex; align-items: center; gap: 18px; margin: 6px 0 0; }
   .run {
-    font: 600 14px/1 Inter, system-ui, sans-serif; color: #fff; background: var(--text);
-    border: 0; border-radius: 8px; padding: 12px 20px; cursor: pointer;
+    font: 600 18px/1 Inter, system-ui, sans-serif; color: #fff; background: var(--text);
+    border: 0; border-radius: 10px; padding: 16px 28px; cursor: pointer;
   }
   .run:hover { background: #000; }
   .run:disabled { opacity: 0.5; cursor: default; }
-  .hint { font-size: 13px; color: var(--faint); }
+  .hint { font-size: 17px; color: var(--faint); }
 
   /* Result */
-  .result { border-top: 1px solid var(--border); padding-top: 28px; min-height: 220px; }
+  .result { border-left: 1px solid var(--border); padding-left: 56px; min-height: 420px; }
   .result.empty { color: var(--faint); }
-  .answer { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 28px; }
+  .answer { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 32px; }
 
-  .bars { display: grid; gap: 14px; }
-  .bar { display: grid; grid-template-columns: 230px 1fr 56px; align-items: center; gap: 14px; }
-  .bar .name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .bar .track { height: 12px; background: var(--track); border-radius: 999px; overflow: hidden; }
+  .bars { display: grid; gap: 18px; }
+  .bar { display: grid; grid-template-columns: 250px 1fr 70px; align-items: center; gap: 18px; }
+  .bar .name { font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .track { height: 16px; background: var(--track); border-radius: 999px; overflow: hidden; }
   .bar .fill { height: 100%; width: 0; background: var(--bar-other); border-radius: 999px; transition: width 600ms cubic-bezier(.2,.8,.2,1); }
   .bar.top .fill { background: var(--accent); }
   .bar.top .name { font-weight: 600; }
-  .bar .pct { font: 500 14px/1 "JetBrains Mono", ui-monospace, monospace; text-align: right; font-variant-numeric: tabular-nums; }
+  .bar .pct { font: 500 18px/1 "JetBrains Mono", ui-monospace, monospace; text-align: right; font-variant-numeric: tabular-nums; }
   .bar.yes .fill { background: var(--yes); }
   .bar.no .fill { background: var(--no); }
 
-  .stats { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 32px; font-size: 13px; color: var(--muted); }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 36px; font-size: 17px; color: var(--muted); }
   .stats b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
 
   details { margin-top: 24px; }
   details + details { margin-top: 12px; }
-  summary { font-size: 13px; color: var(--muted); cursor: pointer; }
+  summary { font-size: 17px; color: var(--muted); cursor: pointer; }
   pre {
-    font: 13px/1.6 "JetBrains Mono", ui-monospace, monospace; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; overflow-x: auto; margin: 10px 0 0;
+    font: 17px/1.6 "JetBrains Mono", ui-monospace, monospace; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 10px 0 0; white-space: pre-wrap; word-break: break-word;
   }
   .error { color: var(--no); }
 
-  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .7s linear infinite; }
+  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 820px) {
     .wrap { padding: 32px 16px 48px; }
     .layout { grid-template-columns: 1fr; gap: 24px; }
+    .workspace { grid-template-columns: 1fr; gap: 32px; }
+    .result { border-left: 0; padding-left: 0; border-top: 1px solid var(--border); padding-top: 28px; min-height: 0; }
     nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
     nav .group { margin-bottom: 8px; }
     .bar { grid-template-columns: 110px 1fr 48px; gap: 10px; }
@@ -124,23 +127,25 @@
   <div class="layout">
     <nav id="nav"></nav>
 
-    <main>
-      <div class="meta"><span class="badge" id="type"></span></div>
-      <div class="field">
-        <label for="instructions">Question</label>
-        <input id="instructions" autocomplete="off">
-      </div>
-      <div class="field" id="optionsField">
-        <label id="optionsLabel">Categories</label>
-        <div class="options" id="options"></div>
-      </div>
-      <div class="field">
-        <label for="state">Text</label>
-        <textarea id="state" rows="4"></textarea>
-      </div>
-      <div class="actions">
-        <button class="run" id="run">Decide</button>
-        <span class="hint">⌘ / Ctrl + Enter</span>
+    <main class="workspace">
+      <div class="editor">
+        <div class="meta"><span class="badge" id="type"></span></div>
+        <div class="field">
+          <label for="instructions">Question</label>
+          <input id="instructions" autocomplete="off">
+        </div>
+        <div class="field" id="optionsField">
+          <label id="optionsLabel">Categories</label>
+          <div class="options" id="options"></div>
+        </div>
+        <div class="field">
+          <label for="state">Text</label>
+          <textarea id="state" rows="4"></textarea>
+        </div>
+        <div class="actions">
+          <button class="run" id="run">Decide</button>
+          <span class="hint">⌘ / Ctrl + Enter</span>
+        </div>
       </div>
 
       <section class="result empty" id="result">Run a decision to see the result.</section>

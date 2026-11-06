@@ -27,94 +27,94 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--text); }
-  body { font: 15px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 24px 64px; }
+  body { font: 20px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1760px; margin: 0 auto; padding: 32px 56px 48px; }
 
-  header { margin-bottom: 40px; }
-  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  header { margin-bottom: 24px; }
+  h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
 
-  .layout { display: grid; grid-template-columns: 372px 1fr; gap: 56px; align-items: start; }
+  .layout { display: grid; grid-template-columns: 520px 1fr; gap: 80px; align-items: start; }
   main, aside { min-width: 0; }
 
   /* Game column */
-  .status { display: flex; align-items: center; gap: 10px; min-height: 40px; margin-bottom: 18px; }
+  .status { display: flex; align-items: center; gap: 12px; min-height: 48px; margin-bottom: 20px; }
   #spinner:empty { display: none; }
-  .status .text { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .status .text { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
 
-  .board { display: grid; grid-template-columns: repeat(3, 1fr); width: 372px; height: 372px; }
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); width: 520px; height: 520px; }
   .cell {
     position: relative; border: 0; background: var(--bg); font: inherit; cursor: pointer; padding: 0;
     display: grid; place-items: center; transition: background 150ms;
   }
   /* Inner grid lines only */
-  .cell:nth-child(-n+6) { border-bottom: 2px solid var(--border); }
-  .cell:not(:nth-child(3n)) { border-right: 2px solid var(--border); }
+  .cell:nth-child(-n+6) { border-bottom: 3px solid var(--border); }
+  .cell:not(:nth-child(3n)) { border-right: 3px solid var(--border); }
   .cell:hover:not(:disabled) { background: var(--surface); }
   .cell:disabled { cursor: default; }
-  .cell .letter { font: 500 14px/1 "JetBrains Mono", ui-monospace, monospace; color: var(--faint); }
-  .cell .mark { font-size: 64px; font-weight: 600; line-height: 1; }
+  .cell .letter { font: 500 18px/1 "JetBrains Mono", ui-monospace, monospace; color: var(--faint); }
+  .cell .mark { font-size: 92px; font-weight: 600; line-height: 1; }
   .cell .mark.X { color: var(--text); }
   .cell .mark.O { color: var(--accent); }
   .cell.last::after {
-    content: ""; position: absolute; inset: 14px; border-radius: 12px; border: 2px solid var(--accent-soft);
+    content: ""; position: absolute; inset: 20px; border-radius: 16px; border: 3px solid var(--accent-soft);
   }
   .cell.win { background: var(--win-soft); }
   .cell.win .mark { color: var(--win); }
 
-  .controls { margin-top: 28px; display: grid; gap: 14px; }
-  .segmented { display: inline-flex; background: var(--track); border-radius: 8px; padding: 3px; width: 100%; }
+  .controls { margin-top: 24px; display: grid; gap: 18px; }
+  .segmented { display: inline-flex; background: var(--track); border-radius: 10px; padding: 4px; width: 100%; }
   .segmented button {
-    flex: 1; border: 0; background: none; font: 500 13px/1 Inter, system-ui, sans-serif; color: var(--muted);
-    padding: 10px 12px; border-radius: 6px; cursor: pointer;
+    flex: 1; border: 0; background: none; font: 500 17px/1 Inter, system-ui, sans-serif; color: var(--muted);
+    padding: 14px 16px; border-radius: 8px; cursor: pointer;
   }
   .segmented button[aria-pressed="true"] { background: var(--bg); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
   .run {
-    font: 600 14px/1 Inter, system-ui, sans-serif; color: #fff; background: var(--text);
-    border: 0; border-radius: 8px; padding: 12px 20px; cursor: pointer; justify-self: start;
+    font: 600 18px/1 Inter, system-ui, sans-serif; color: #fff; background: var(--text);
+    border: 0; border-radius: 10px; padding: 16px 28px; cursor: pointer; justify-self: start;
   }
   .run:hover { background: #000; }
-  .score { display: flex; gap: 24px; font-size: 13px; color: var(--muted); }
+  .score { display: flex; gap: 32px; font-size: 17px; color: var(--muted); }
   .score b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
 
   /* Move log */
-  aside h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
+  aside h2 { font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 18px; }
   .log { display: grid; }
   .log .empty { color: var(--faint); }
-  .entry { border-top: 1px solid var(--border); padding: 20px 0; }
+  .entry { border-top: 1px solid var(--border); padding: 24px 0; }
   .entry:first-child { border-top: 0; padding-top: 0; }
-  .entry.human { padding: 12px 0; color: var(--muted); font-size: 14px; }
+  .entry.human { padding: 14px 0; color: var(--muted); font-size: 18px; }
   .entry-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-  .entry-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-  .entry-meta { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .entry-title { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .entry-meta { font-size: 17px; color: var(--muted); white-space: nowrap; }
   .entry-meta b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
   .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 
-  .bars { display: grid; gap: 10px; }
-  .bar { display: grid; grid-template-columns: 28px 1fr 48px; align-items: center; gap: 12px; }
-  .bar .name { font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; }
-  .bar .track { height: 10px; background: var(--track); border-radius: 999px; overflow: hidden; }
+  .bars { display: grid; gap: 12px; }
+  .bar { display: grid; grid-template-columns: 40px 1fr 64px; align-items: center; gap: 16px; }
+  .bar .name { font: 500 17px/1 "JetBrains Mono", ui-monospace, monospace; }
+  .bar .track { height: 14px; background: var(--track); border-radius: 999px; overflow: hidden; }
   .bar .fill { height: 100%; width: 0; background: var(--bar-other); border-radius: 999px; transition: width 600ms cubic-bezier(.2,.8,.2,1); }
   .bar.top .fill { background: var(--accent); }
   .bar.top .name { color: var(--accent); }
-  .bar .pct { font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; text-align: right; font-variant-numeric: tabular-nums; }
+  .bar .pct { font: 500 17px/1 "JetBrains Mono", ui-monospace, monospace; text-align: right; font-variant-numeric: tabular-nums; }
 
   details { margin-top: 18px; }
   details + details { margin-top: 10px; }
-  summary { font-size: 13px; color: var(--muted); cursor: pointer; }
+  summary { font-size: 17px; color: var(--muted); cursor: pointer; }
   pre {
-    font: 12.5px/1.6 "JetBrains Mono", ui-monospace, monospace; background: var(--surface); white-space: pre-wrap; word-break: break-word;
+    font: 16px/1.6 "JetBrains Mono", ui-monospace, monospace; background: var(--surface); white-space: pre-wrap; word-break: break-word;
     border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 10px 0 0;
   }
   .error { color: var(--no); }
 
-  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .7s linear infinite; }
+  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 860px) {
     .wrap { padding: 32px 16px 48px; }
     .layout { grid-template-columns: 1fr; gap: 40px; }
-    .board { width: 100%; max-width: 372px; height: auto; aspect-ratio: 1; }
-    .controls { max-width: 372px; }
+    .board { width: 100%; max-width: 520px; height: auto; aspect-ratio: 1; }
+    .controls { max-width: 520px; }
   }
 </style>
 </head>
